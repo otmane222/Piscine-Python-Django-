@@ -48,9 +48,10 @@ def starto():
 	with open("periodic_table.txt", "r") as file:
 		for line in file:
 			elements = line.split(",")
-			if i % 10 == 0 & i != 0:
+			if i % 10 == 0 and i != 0:
 				html_content += f"			</tr>\n"
 				html_content += f"			<tr>\n"
+			
 			if i == 0:
 				html_content += f"			<td style='border: 1px solid black; padding:10px'>\n"
 			else:
