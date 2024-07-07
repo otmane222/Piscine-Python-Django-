@@ -8,25 +8,22 @@ class Text(str):
     Because directly using str class was too mainstream.
     """
 
-
     def __str__(self):
         """
         Do you really need a comment to understand this method?..
         """
-
-        if len(self) == 1:
-            return super().__str__().replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('\n', '\n<br />\n')
-        return super().replace('\n', '\n')
-
+        if len(self) == 1 and self != '\n':
+            return super().__str__().replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+        return super().__str__().replace('\n', '\n<br />\n')
+        # .replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+# return super().__str__().replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace('\n', '\n<br />\n')
 
 class Elem:
     """
     Elem will permit us to represent our HTML elements.
     """
     class ValidationError(Exception):
-        """
-        A custom exception to raise when a type error occurs.
-        """
+        print('ValidationError')
         pass
 
     def __init__(self, tag='div', attr={}, content=None, tag_type='double'):
@@ -35,20 +32,42 @@ class Elem:
 
         Obviously.
         """
+        
+        if type(tag) != str:
+            raise Elem.ValidationError
+        if type(attr) != dict:
+            raise Elem.ValidationError
+        if type(tag_type) != str:
+            raise Elem.ValidationError
+        if tag_type not in ['double', 'simple']:
+            raise Elem.ValidationError
+ 
+
+        if content == '' and type(content) == str:
+            raise Elem.ValidationError
         self.tag = tag
         self.attr = attr if attr else {}
         self.content = []
         self.tag_type = tag_type
         self.counter = 0
         if content:
-            if type(content) == Elem:
-                content.counter += 1
-                self.add_content(content)
             res = ''
-            if type(content) == list:
+            if type(content) == Elem:
+                self.add_content(content)
+            elif type(content) == list:
                 for elem in content:
-                    res += '  ' + str(elem) + '\n'
-                self.add_content(Text(res))
+                    if type(elem) == Elem:
+                        elem.counter += 1
+                        self.add_content(elem)
+                    elif type(elem) == Text:
+                        if elem != Text(''):
+                            self.add_content(Text('  ' + elem))
+                        else:
+                            self.add_content(Text(''))
+                    else:
+                        self.add_content(elem)
+            elif type(content) == Text:
+                self.add_content(Text(content))
                     
 
     def __str__(self):
@@ -60,11 +79,33 @@ class Elem:
         """
         result = ''
         if self.tag_type == 'double':
-            open_tag = self.counter * '  '+ '<' + self.tag + self.__make_attr() + '>'
-            close_tag = '</' + self.tag + '>'
-            result = open_tag + self.__make_content() + close_tag
+            for elem in self.content:
+                if type(elem) == Elem:
+                    elem.counter = self.counter + 1
+            open_tag = self.counter * '  ' + '<' + self.tag + self.__make_attr() + '>'
+            if len(self.content) == 0:
+                self.counter = 0
+            close_tag =  self.counter * '  ' + '</' + self.tag + '>'
+                    
+            if len(self.content) == 0:
+                result = open_tag + close_tag
+            else:
+                for elem in self.content:
+                    if type(elem) != Elem:
+                        self.counter += 1
+                        break
+                for elem in self.content:
+                    if type(elem) == Elem:
+                        self.counter -= 1
+                        break
+                result = open_tag +  self.__make_content() + close_tag
         elif self.tag_type == 'simple':
-            open_tag = '<' + self.tag + self.__make_attr() + ' />' + '\n'
+            for elem in self.content:
+                if type(elem) == Elem:
+                    elem.counter = self.counter + 1
+                elif type(elem) == Text:
+                    elem = Text('  ' + elem)
+            open_tag = self.counter * '  ' + '<' + self.tag + self.__make_attr() + ' />' + '\n'
             close_tag = ''
             result = open_tag + close_tag
         return result
@@ -87,7 +128,10 @@ class Elem:
             return ''
         result = '\n'
         for elem in self.content:
-            result += str(elem) + '\n'
+            if type(elem) != Elem:
+                result += self.counter * '  ' + str(elem) + '\n'
+            else:
+                result +=  str(elem) + '\n'
         return result
 
     def add_content(self, content):
@@ -96,8 +140,10 @@ class Elem:
         if type(content) == list:
             self.content += [elem for elem in content if elem != Text('')]
         elif content != Text(''):
-            self.content.append(content)
-
+            if type(content) == Text:
+                self.content.append(Text(content))
+            else:
+                self.content.append(content)
 
     @staticmethod
     def check_type(content):
@@ -134,6 +180,11 @@ def starto():
     print(html_elem)
 
 if __name__ == '__main__':
-    # starto()
-    print(str(Text('\n')))
+    try:
+        starto()
+    except Exception as e:
+        print("damn")
+        pass
+    # print(str(Elem(content=Text(1))))
+
     
