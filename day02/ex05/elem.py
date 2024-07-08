@@ -60,7 +60,7 @@ class Elem:
                         self.add_content(elem)
                     elif type(elem) == Text:
                         if elem != Text(''):
-                            self.add_content(Text('  ' + elem))
+                            self.add_content(Text(elem))
                         else:
                             self.add_content(Text(''))
                     else:
@@ -79,7 +79,7 @@ class Elem:
         result = ''
         if self.tag_type == 'double':
             for elem in self.content:
-                if type(elem) == Elem:
+                if type(elem) == Elem or isinstance(elem, Elem):
                     elem.counter = self.counter + 1
             open_tag = self.counter * '  ' + '<' + self.tag + self.__make_attr() + '>'
             if len(self.content) == 0:
@@ -90,11 +90,11 @@ class Elem:
                 result = open_tag + close_tag
             else:
                 for elem in self.content:
-                    if type(elem) != Elem:
+                    if type(elem) != Elem and not isinstance(elem, Elem):
                         self.counter += 1
                         break
                 for elem in self.content:
-                    if type(elem) == Elem:
+                    if type(elem) == Elem or isinstance(elem, Elem):
                         self.counter -= 1
                         break
                 result = open_tag +  self.__make_content() + close_tag
