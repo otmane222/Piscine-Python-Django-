@@ -98,8 +98,8 @@ def starto():
     html = elements.Html([elements.Head([elements.Title([elem.Text('"hello ground!"')])]), elements.Body()])
     # print(html)
     pa = Page(html)
-    print(pa)
     pa.write_to_file("test.html")
+    print(pa)
     
 
 if __name__ == "__main__":

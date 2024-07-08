@@ -77,6 +77,7 @@ class Elem:
         elements...).
         """
         result = ''
+        tmp = self.counter
         if self.tag_type == 'double':
             for elem in self.content:
                 if type(elem) == Elem or isinstance(elem, Elem):
@@ -106,6 +107,7 @@ class Elem:
                     elem = Text('  ' + elem)
             open_tag = self.counter * '  ' + '<' + self.tag + self.__make_attr() + ' />' + '\n'
             result = open_tag
+        self.counter = tmp
         return str(result)
 
     def __make_attr(self):
