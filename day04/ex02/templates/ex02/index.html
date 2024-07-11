@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ex02 Page</title>
+</head>
+<body>
+    <div>
+        <h1>Input Form</h1>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    
+    <div>
+        <h1>Input History</h1>
+        <ul>
+            {% for entry in input_history %}
+                <li>{{ entry.0|date:"Y-m-d H:i:s" }} - {{ entry.1 }}</li>
+            {% empty %}
+                <li>No input history yet.</li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>
