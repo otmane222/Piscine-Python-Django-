@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ex03</title>
+
+    <style>
+        table {
+            border-collapse: collapse;
+        }
+        th, td {
+            height: 40px;
+            width: 80px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <table border="1">
+        <tr>
+            <th style="background-color: black; color: white;">Noir</th>
+            <th style="background-color: red; color: white;">Rouge</th>
+            <th style="background-color: blue; color: white;">Bleu</th>
+            <th style="background-color: green; color: white;">Vert</th>
+        </tr>
+        {% for shade in shades %}
+        <tr>
+            <td style="background-color: {{ shade.noir }};"></td>
+            <td style="background-color: {{ shade.rouge }};"></td>
+            <td style="background-color: {{ shade.bleu }};"></td>
+            <td style="background-color: {{ shade.vert }};"></td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
