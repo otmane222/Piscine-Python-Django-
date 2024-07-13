@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Ex02 Page</title>
+    <link rel="stylesheet" href="../../static/style.css" />
+</head>
+<body>
+    <header>
+
+        <div class="data">
+            <h1>Input Form</h1>
+            <form method="post">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+        
+        <div class="history">
+            <h1>Input History</h1>
+            <ul>
+                {% for entry in input_history %}
+                <li>{{ entry.1 }}</li>
+                {% comment %} <li>{{ entry }}</li> {% endcomment %}
+                {% empty %}
+                <li>No input history yet.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </header>
+</body>
+</html>
