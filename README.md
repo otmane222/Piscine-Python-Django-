@@ -38,3 +38,8 @@ def calculate(length, width, operation):
         return length * width
     elif operation == 'perimeter':
         return 2 * (length + width)
+
+
+<!--
+https://wiki.postgresql.org/wiki/Using_psycopg2_with_PostgreSQL
+-->
