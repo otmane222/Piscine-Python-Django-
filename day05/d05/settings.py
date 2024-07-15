@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'ex00',
+    'ex01',
+    'ex02',
 ]
 
 MIDDLEWARE = [
@@ -97,7 +99,6 @@ import environ
 env = environ.Env()
 environ.Env.read_env()
 
-SECRET_KEY = env("SECRET_KEY")
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
