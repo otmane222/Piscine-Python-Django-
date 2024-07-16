@@ -1,0 +1,60 @@
+<!-- myapp/templates/display.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Display Data</title>
+    <style>
+        * {
+            margin:0;
+            padding:0;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        table {
+            margin-left:10px;
+            border-collapse: collapse;
+            width: 97%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data from Databases</h1>
+    <table>
+        {% if movies %}
+            <thead>
+                <tr>
+                    <th>Episode number</th>
+                    <th>Title</th>
+                    <th>Opening_crawl</th>
+                    <th>Director</th>
+                    <th>Producer</th>
+                    <th>Release_date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in movies %}
+                <tr>
+                    <td>{{ entry.episode_nb }}</td>
+                    <td>{{ entry.title }}</td>
+                    <td>{{ entry.opening_crawl }}</td>
+                    <td>{{ entry.director }}</td>
+                    <td>{{ entry.producer }}</td>
+                    <td>{{ entry.release_date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        {% else %}
+            <h2>No data available</h2>
+        {% endif%}
+    </table>
+</body>
+</html>
