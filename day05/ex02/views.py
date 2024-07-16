@@ -1,9 +1,9 @@
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.conf import settings
+from django.db import connection
 import psycopg2
 import os
-from django.db import connection
 
 # Create your views here.
 
