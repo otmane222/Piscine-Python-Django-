@@ -1,7 +1,8 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.conf import settings
-from django.db import connection
+from django.db import connection, IntegrityError
+from django.utils import timezone
 import psycopg2
 import os
 
@@ -30,24 +31,22 @@ def init(request):
                 director VARCHAR(32) NOT NULL,
                 producer VARCHAR(128) NOT NULL,
                 release_date DATE NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
-            -- Function to update updated_at automatically
-            CREATE OR REPLACE FUNCTION update_updated_at()
+            CREATE OR REPLACE FUNCTION update_updated()
             RETURNS TRIGGER AS $$
             BEGIN
-                NEW.updated_at = CURRENT_TIMESTAMP;
+                NEW.updated = CURRENT_TIMESTAMP;
                 RETURN NEW;
             END;
             $$ LANGUAGE plpgsql;
 
-            -- Trigger to update updated_at on update
-            CREATE TRIGGER ex06_movies_updated_at_trigger
+            CREATE TRIGGER ex06_movies_updated_trigger
             BEFORE UPDATE ON ex06_movies
             FOR EACH ROW
-            EXECUTE FUNCTION update_updated_at();
+            EXECUTE FUNCTION update_updated();
         '''
 
         # Execute the SQL command
@@ -86,8 +85,8 @@ def populate(request):
         file_path = os.path.join(settings.BASE_DIR, file_relative_path)
         movie_dict = {}
         insert_query = """
-            INSERT INTO ex06_movies (episode_nb, title, director, producer, release_date, created_at, updated_at)
-            VALUES (%s, %s, %s, %s, %s, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+            INSERT INTO ex06_movies (episode_nb, title, director, producer, release_date)
+            VALUES (%s, %s, %s, %s, %s)
             ON CONFLICT DO NOTHING
         """
         with open (file_path, 'r') as file:
@@ -108,7 +107,7 @@ def populate(request):
                     movie_dict['title'],
                     movie_dict['director'],
                     movie_dict['producer'],
-                    movie_dict['release_date']
+                    movie_dict['release_date'],
                 ))
                 movie_dict.clear()
                 state.append('OK')
@@ -123,9 +122,45 @@ def populate(request):
 
 def display(request):
     with connection.cursor() as cursor:
-        cursor.execute("SELECT episode_nb, title, opening_crawl, director, producer, release_date,created_at, updated_at FROM ex06_movies")
+        cursor.execute("SELECT episode_nb, title, opening_crawl, director, producer, release_date,created, updated FROM ex06_movies")
         data = cursor.fetchall()
     # Format data into a list of dictionaries for easier template rendering
-    data = [{'episode_nb':row[0], 'title':row[1], 'opening_crawl':row[2], 'director':row[3], 'producer':row[4], 'release_date':row[5], 'created_at':row[6], 'updated_at':row[7]} for row in data]
+    data = [{'episode_nb':row[0], 'title':row[1], 'opening_crawl':row[2], 'director':row[3], 'producer':row[4], 'release_date':row[5], 'created':row[6], 'updated':row[7]} for row in data]
 
     return render(request, 'ex06/display.html', {'data': data})
+
+def update(request):
+    conn = psycopg2.connect(
+        dbname='dbtest',
+        user='oaboulgh',
+        password='admin',
+        host='localhost',
+        port='5432'
+    )
+    cursor = conn.cursor()
+    if (request.method == 'POST'):
+        title = request.POST.get('title')
+        text = request.POST.get('text')
+        print(text, "---------")
+        print(title, "+++++++++++++++")
+        try:
+            cursor.execute("UPDATE ex06_movies set opening_crawl = %s WHERE title = %s",( text, title))
+            conn.commit()
+            cursor.close()
+            conn.close()
+            return redirect('display')
+        except IntegrityError:
+            error_message = "Movie not found."
+            return HttpResponse(error_message, 404)
+
+    else:
+        cursor.execute("SELECT title FROM ex06_movies")
+    with connection.cursor() as cursor:
+        cursor.execute("SELECT episode_nb, title FROM ex06_movies")
+        data = cursor.fetchall()
+    # Format data into a list of dictionaries for easier template rendering
+    movies = [{'title': row[1]} for row in data]
+    conn.commit()
+    cursor.close()
+    conn.close()
+    return render (request, 'ex06/update.html', {'movies': movies})
