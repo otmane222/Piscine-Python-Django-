@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Display Data</title>
+    <style>
+        * {
+            margin:0;
+            padding:0;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        table {
+            margin-left:10px;
+            border-collapse: collapse;
+            width: 97%;
+        }
+        th, td {
+            border: 1px solid black;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Data from Database</h1>
+    <table>
+        {% if data %}
+            <thead>
+                <tr>
+                    <th>Character Name</th>
+                    <th>Homeworld</th>
+                    <th>Climate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in data %}
+                <tr>
+                    <td>{{ entry.name }}</td>
+                    <td>{{ entry.homeworld }}</td>
+                    <td>{{ entry.climate }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        {% else %}
+            <h2>No data available</h2>
+        {% endif%}
+    </table>
+</body>
+</html>

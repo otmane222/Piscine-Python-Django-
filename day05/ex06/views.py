@@ -2,7 +2,6 @@ from django.shortcuts import render, redirect
 from django.http import HttpResponse
 from django.conf import settings
 from django.db import connection, IntegrityError
-from django.utils import timezone
 import psycopg2
 import os
 

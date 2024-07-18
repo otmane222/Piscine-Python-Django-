@@ -43,3 +43,7 @@ def calculate(length, width, operation):
 <!--
 https://wiki.postgresql.org/wiki/Using_psycopg2_with_PostgreSQL
 -->
+<!--
+relational database
+ https://www.youtube.com/watch?v=C3icLzBtg8I
+ -->
