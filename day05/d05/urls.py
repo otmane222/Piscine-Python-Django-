@@ -28,5 +28,6 @@ urlpatterns = [
     path('ex07/', include('ex07.urls'), name="ex07"),
     path('ex08/', include('ex08.urls'), name="ex08"),
     path('ex09/', include('ex09.urls'), name="ex09"),
+    path('ex10/', include('ex10.urls'), name="ex10"),
     path('admin/', admin.site.urls),
 ]
