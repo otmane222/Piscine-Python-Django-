@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Display</title>
+
+</head>
+<body>
+    
+    {% if get %}
+        <div>
+            <form method="post">
+                <h2>Search Form</h2>
+                {{ form.as_p }}
+                {% csrf_token %}
+                <button type="submit">Search</button>
+
+            </form>
+        </div>
+    {%else%}
+        {% if not data %}
+            <p>Nothing corresponding to your research.</p>
+        {% else %}
+            <h2>Search Results</h2>
+            <ul>
+                {% for var in data %}
+                    <li>{{ var.title }} - {{ var.name }} - {{ var.gender }} - {{ var.homeworld }} - {{ var.diameter }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% endif %}
+
+</body>
+</html>
+
+

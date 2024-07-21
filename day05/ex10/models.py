@@ -15,8 +15,8 @@ class Planets(models.Model):
     rotation_period = models.IntegerField(null=True)
     surface_water = models.FloatField(null=True)
     terrain = models.CharField(max_length=128, blank=True, null=True)
-    created = models.DateTimeField(auto_now_add=True, default=timezone.now())
-    updated = models.DateTimeField(auto_now=True, default=timezone.now())
+    created = models.DateTimeField(default=timezone.now())
+    updated = models.DateTimeField(default=timezone.now())
 
     class Meta:
         db_table = 'ex10_planets'
@@ -35,8 +35,8 @@ class People(models.Model):
     height = models.IntegerField(null=True)
     mass = models.FloatField(null=True)
     homeworld = models.ForeignKey('Planets', on_delete=models.CASCADE,null=True)
-    created = models.DateTimeField(auto_now_add=True, default=timezone.now())
-    updated = models.DateTimeField(auto_now=True, default=timezone.now())
+    created = models.DateTimeField(default=timezone.now())
+    updated = models.DateTimeField(default=timezone.now())
 
     class Meta:
         db_table = 'ex10_people'
